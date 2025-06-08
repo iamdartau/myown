@@ -6,33 +6,94 @@
     <title>Alexey Dartau - Lead Java Developer</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
+    :root {
+      --bg: #f9fafb;
+      --text: #111827;
+      --tag-bg: #e5e7eb;
+      --tag-hover: #d1d5db;
+      --btn-bg: #10b981;
+      --btn-hover: #059669;
+    }
+    body.dark {
+      --bg: #111827;
+      --text: #f9fafb;
+      --tag-bg: #1f2937;
+      --tag-hover: #374151;
+      --btn-bg: #3b82f6;
+      --btn-hover: #2563eb;
+    }
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background-color: #f9fafb;
-      color: #111827;
+      background-color: var(--bg);
+      color: var(--text);
       line-height: 1.6;
+      scroll-behavior: smooth;
+      transition: background-color 0.3s, color 0.3s;
     }
     header {
-      background-color: #111827;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
       color: #fff;
       padding: 2rem;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 200%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.05), transparent);
+      animation: shimmer 8s linear infinite;
+      z-index: 0;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(50%); }
+    }
+    header h1, header p, header a, .toggle-theme {
+      position: relative;
+      z-index: 1;
     }
     .btn {
       display: inline-block;
       margin-top: 1rem;
       padding: 0.6rem 1.2rem;
-      background-color: #2563eb;
+      background-color: var(--btn-bg);
       color: #fff;
       text-decoration: none;
       border-radius: 0.375rem;
+      font-weight: 600;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .btn:hover {
+      background-color: var(--btn-hover);
+      transform: scale(1.05);
+    }
+    .toggle-theme {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: transparent;
+      border: 2px solid #fff;
+      color: #fff;
+      padding: 0.3rem 0.8rem;
+      border-radius: 5px;
+      cursor: pointer;
       font-weight: 600;
     }
     main {
       max-width: 900px;
       margin: 2rem auto;
       padding: 1rem;
+      animation: fadeIn 0.8s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     h1, h2 {
       margin-bottom: 0.5rem;
@@ -42,12 +103,16 @@
     }
     .tag {
       display: inline-block;
-      background-color: #e5e7eb;
-      color: #1f2937;
+      background-color: var(--tag-bg);
+      color: var(--text);
       border-radius: 0.25rem;
       padding: 0.2rem 0.5rem;
       margin: 0.2rem;
       font-size: 0.875rem;
+      transition: background-color 0.3s;
+    }
+    .tag:hover {
+      background-color: var(--tag-hover);
     }
     ul {
       padding-left: 1.2rem;
@@ -56,6 +121,7 @@
 </head>
 <body>
 <header>
+    <button class="toggle-theme" onclick="toggleTheme()">🌙 Dark</button>
     <h1>Alexey Dartau</h1>
     <p>Lead Java Developer</p>
     <a href="files/Alexey D. LeadJavaDeveloper.pdf" class="btn" download>Download CV (PDF)</a>
@@ -120,5 +186,12 @@
         <p>Master’s Degree in Technologies, Almaty University of Power Engineering and Telecommunications</p>
     </section>
 </main>
+<script>
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+      const button = document.querySelector('.toggle-theme');
+      button.textContent = document.body.classList.contains('dark') ? '☀️ Light' : '🌙 Dark';
+    }
+  </script>
 </body>
 </html>
