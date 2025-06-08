@@ -1,61 +1,124 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Моё Резюме</title>
+    <title>Alexey Dartau - Lead Java Developer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            margin: 0;
-            font-family: sans-serif;
-            background: #f4f4f4;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            text-align: center;
-            padding: 2rem;
-        }
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            max-width: 600px;
-            width: 100%;
-        }
-        h1 {
-            margin-bottom: 0.5rem;
-        }
-        p {
-            margin-top: 0;
-            color: #666;
-        }
-        .btn {
-            margin-top: 1.5rem;
-            padding: 0.75rem 1.5rem;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: background 0.3s;
-        }
-        .btn:hover {
-            background: #0056b3;
-        }
-    </style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #f9fafb;
+      color: #111827;
+      line-height: 1.6;
+    }
+    header {
+      background-color: #111827;
+      color: #fff;
+      padding: 2rem;
+      text-align: center;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      background-color: #2563eb;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 0.375rem;
+      font-weight: 600;
+    }
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    h1, h2 {
+      margin-bottom: 0.5rem;
+    }
+    section {
+      margin-bottom: 2rem;
+    }
+    .tag {
+      display: inline-block;
+      background-color: #e5e7eb;
+      color: #1f2937;
+      border-radius: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      margin: 0.2rem;
+      font-size: 0.875rem;
+    }
+    ul {
+      padding-left: 1.2rem;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-    <h1>Alex Dartau</h1>
-    <p>Tech Lead</p>
+<header>
+    <h1>Alexey Dartau</h1>
+    <p>Lead Java Developer</p>
     <a href="files/Alexey D. LeadJavaDeveloper.pdf" class="btn" download>Download CV (PDF)</a>
-</div>
+</header>
+<main>
+    <section>
+        <h2>Professional Summary</h2>
+        <p>Lead Java Developer with 6+ years of experience building robust, scalable backend systems in enterprise, fintech, and banking domains. Skilled in Java, Spring Boot, microservices, and cloud-native technologies. Proven leadership in guiding teams, improving performance, and delivering business value.</p>
+    </section>
+
+    <section>
+        <h2>Key Technologies</h2>
+        <div>
+            <span class="tag">Java</span><span class="tag">Kotlin</span><span class="tag">Spring Boot</span><span class="tag">WebFlux</span>
+            <span class="tag">PostgreSQL</span><span class="tag">MongoDB</span><span class="tag">Kafka</span><span class="tag">Kubernetes</span>
+            <span class="tag">Docker</span><span class="tag">Camunda</span><span class="tag">RabbitMQ</span><span class="tag">AWS S3</span>
+        </div>
+    </section>
+
+    <section>
+        <h2>Experience</h2>
+        <h3>Darlean (06.2024 – Present)</h3>
+        <p>Lead Java Developer | ERP System Development</p>
+        <ul>
+            <li>Led architectural decisions for scalability and maintainability.</li>
+            <li>Mentored engineers and drove code quality.</li>
+            <li>Supervised system improvements and proactive performance optimizations.</li>
+        </ul>
+
+        <h3>Online Banking BCC (03.2023 – 05.2024)</h3>
+        <p>Lead Java Developer | Banking Platform</p>
+        <ul>
+            <li>Developed platform from scratch with Kotlin and Spring WebFlux.</li>
+            <li>Integrated with external systems and led Agile development.</li>
+            <li>Focused on security, scalability, and team mentoring.</li>
+        </ul>
+
+        <h3>Eurasian Bank (07.2022 – 03.2023)</h3>
+        <p>Senior Java Developer | Credit Conveyor Microservices</p>
+        <ul>
+            <li>Designed and developed high-performance B2B credit modules.</li>
+            <li>Focused on secure transaction processing and integration.</li>
+        </ul>
+
+        <h3>Alfa Bank (07.2021 – 07.2022)</h3>
+        <p>Java Developer | Integration Microservices</p>
+        <ul>
+            <li>Integrated systems with REST and SOAP protocols.</li>
+            <li>Collaborated on architecture and implemented caching/queues.</li>
+        </ul>
+
+        <h3>Tele2 (01.2019 – 07.2021)</h3>
+        <p>Java Developer | Equipment Data Service</p>
+        <ul>
+            <li>Built Java EE-based core system for location-based equipment data.</li>
+            <li>Created user interfaces and optimized data queries.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Education</h2>
+        <p>Master’s Degree in Technologies, Almaty University of Power Engineering and Telecommunications</p>
+    </section>
+</main>
 </body>
 </html>
