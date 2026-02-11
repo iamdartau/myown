@@ -200,6 +200,7 @@
         .cta-btn:hover::before { opacity: 1; }
         .cta-btn:hover { border-color: transparent; transform: scale(1.08); box-shadow: 0 5px 30px var(--accent-glow); color: white; }
         .cta-btn span { position: relative; z-index: 1; }
+        .cta-btn small { opacity: 0.7; font-size: 0.75em; margin-left: 4px; }
 
         .scroll-indicator {
             position: absolute;
@@ -597,14 +598,175 @@
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
-        /* Mobile */
+        /* Geo greeting */
+        .geo-greeting {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-bright);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 0.6rem 1.6rem;
+            border-radius: 50px;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            display: none;
+        }
+        .geo-greeting.visible {
+            opacity: 1;
+            transform: translateY(0);
+            display: inline-block;
+        }
+
+        /* ===== MOBILE ===== */
+
+        /* Tablet */
         @media (max-width: 768px) {
             body { cursor: auto; }
             .cursor-dot, .cursor-ring { display: none; }
             .nav-btn, .skill-tag, .fun-btn, .exp-card, .exp-toggle,
             .gravity-zone, .gravity-ball, .cta-btn { cursor: pointer; }
-            .hero-name { letter-spacing: -1px; }
-            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+
+            .hero { padding: 2rem 1.5rem; min-height: 100svh; }
+            .hero-name { font-size: clamp(2.2rem, 10vw, 3.5rem); letter-spacing: -1px; }
+            .hero-title { font-size: 1rem; }
+
+            .geo-greeting { font-size: 0.85rem; padding: 0.5rem 1.2rem; margin-bottom: 1rem; }
+
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                margin: -2rem auto 2rem;
+                padding: 0 1rem;
+            }
+            .stat-card { padding: 1.2rem; border-radius: 12px; }
+            .stat-number { font-size: 2rem; }
+            .stat-label { font-size: 0.7rem; letter-spacing: 1px; }
+
+            .content { padding: 0 1rem 4rem; }
+            .section { margin-bottom: 3rem; }
+            .section-title { font-size: 1.5rem; gap: 0.7rem; margin-bottom: 1.5rem; }
+            .section-title::before { width: 25px; }
+            .section-text { font-size: 1rem; line-height: 1.8; }
+
+            .skills-grid { gap: 8px; }
+            .skill-tag { padding: 0.5rem 1rem; font-size: 0.8rem; }
+
+            .exp-card { padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem; }
+            .exp-card:hover { transform: none; }
+            .exp-role { font-size: 1.1rem; }
+            .exp-company { font-size: 0.85rem; }
+
+            .fun-zone { padding: 1.5rem; }
+            .fun-zone h3 { font-size: 1.2rem; margin-bottom: 1rem; }
+            .fun-buttons { gap: 8px; }
+            .fun-btn { padding: 0.6rem 1.2rem; font-size: 0.85rem; }
+            .fun-btn:hover { transform: none; }
+            .fun-btn:active { transform: scale(0.95); background: var(--accent); border-color: var(--accent); }
+
+            .gravity-zone { height: 220px; }
+
+            .terminal { max-width: 95vw; }
+            .terminal-body { font-size: 0.75rem; padding: 1rem; max-height: 300px; }
+            .terminal-input { font-size: 0.8rem; }
+
+            .edu-card { padding: 1.5rem; }
+
+            .floating-nav { top: 12px; right: 12px; gap: 8px; }
+            .nav-btn { width: 42px; height: 42px; font-size: 1rem; }
+
+            .cta-btn { padding: 0.75rem 1.8rem; font-size: 0.9rem; }
+
+            .scroll-indicator { bottom: 24px; }
+
+            .toast { font-size: 0.8rem; padding: 0.8rem 1.4rem; }
+
+            footer { padding: 2rem 1rem; font-size: 0.8rem; }
+        }
+
+        /* Small phones */
+        @media (max-width: 420px) {
+            .hero { padding: 1.5rem 1rem; }
+            .hero-name { font-size: 2rem; letter-spacing: -0.5px; }
+            .hero-title { font-size: 0.9rem; margin-top: 0.7rem; }
+
+            .geo-greeting { font-size: 0.75rem; padding: 0.4rem 1rem; }
+
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.6rem;
+                padding: 0 0.75rem;
+                margin: -1.5rem auto 1.5rem;
+            }
+            .stat-card { padding: 1rem 0.5rem; }
+            .stat-number { font-size: 1.6rem; }
+            .stat-label { font-size: 0.6rem; letter-spacing: 0.5px; }
+
+            .content { padding: 0 0.75rem 3rem; }
+            .section { margin-bottom: 2rem; }
+            .section-title { font-size: 1.25rem; gap: 0.5rem; margin-bottom: 1rem; }
+            .section-title::before { width: 20px; height: 2px; }
+            .section-text { font-size: 0.9rem; }
+
+            .skills-grid { gap: 6px; }
+            .skill-tag { padding: 0.4rem 0.8rem; font-size: 0.75rem; }
+
+            .exp-card { padding: 1.2rem; }
+            .exp-role { font-size: 1rem; }
+            .exp-company { font-size: 0.8rem; }
+            .exp-subtitle { font-size: 0.8rem; }
+            .exp-toggle { font-size: 0.8rem; }
+            .impact-item { font-size: 0.85rem; }
+
+            .fun-zone { padding: 1.2rem; }
+            .fun-zone h3 { font-size: 1.1rem; }
+            .fun-buttons { gap: 6px; }
+            .fun-btn { padding: 0.5rem 1rem; font-size: 0.8rem; border-width: 1.5px; }
+
+            .gravity-zone { height: 180px; }
+
+            .terminal-body { font-size: 0.7rem; padding: 0.8rem; max-height: 250px; }
+            .terminal-input { font-size: 0.75rem; }
+            .terminal-bar { padding: 10px 12px; }
+            .terminal-dot { width: 10px; height: 10px; }
+
+            .floating-nav { top: 8px; right: 8px; gap: 6px; }
+            .nav-btn { width: 38px; height: 38px; font-size: 0.9rem; }
+
+            .cta-btn { padding: 0.65rem 1.5rem; font-size: 0.85rem; }
+            .cta-btn small { display: block; font-size: 0.65em; margin-left: 0; margin-top: 2px; }
+
+            .toast { font-size: 0.75rem; padding: 0.7rem 1.2rem; bottom: 16px; }
+        }
+
+        /* Touch: active states instead of hover */
+        @media (hover: none) {
+            .skill-tag:active::before { opacity: 1; }
+            .skill-tag:active { transform: scale(1.05); border-color: transparent; color: white; }
+            .exp-card:active { border-color: var(--accent); }
+            .exp-card:active::before { transform: scaleY(1); }
+            .stat-card:active { transform: translateY(-4px); border-color: var(--accent); }
+            .nav-btn:active::before { opacity: 1; }
+            .nav-btn:active { transform: scale(1.1); border-color: transparent; }
+            .fun-btn:active::before { opacity: 1; }
+            .fun-btn:active { border-color: transparent; color: white; }
+            .cta-btn:active::before { opacity: 1; }
+            .cta-btn:active { border-color: transparent; color: white; }
+        }
+
+        /* Safe area for notched phones */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            footer { padding-bottom: calc(2rem + env(safe-area-inset-bottom)); }
+            .toast { bottom: calc(20px + env(safe-area-inset-bottom)); }
+            .floating-nav { top: calc(12px + env(safe-area-inset-top)); right: calc(12px + env(safe-area-inset-right)); }
+        }
+
+        /* Landscape phone */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .hero { min-height: auto; padding: 3rem 2rem; }
+            .scroll-indicator { display: none; }
+            .stats-bar { margin-top: 2rem; }
         }
     </style>
 </head>
@@ -636,12 +798,13 @@
 
 <!-- Hero section -->
 <section class="hero">
+    <div class="geo-greeting" id="geoGreeting"></div>
     <h1 class="hero-name" id="heroName">Alexey Dartau</h1>
     <div class="hero-title">
         <span id="typedText"></span><span class="typed-cursor"></span>
     </div>
     <div class="hero-cta">
-        <a href="files/Alexey D. LeadJavaDeveloper.pdf" class="cta-btn" download><span>Download CV</span></a>
+        <a href="files/Alexey_Dartau_Remote_Global_Version.docx" class="cta-btn" id="cvDownloadBtn" download><span>Download CV <small id="cvRegionLabel"></small></span></a>
     </div>
     <div class="scroll-indicator">
         <span>Explore</span>
@@ -914,7 +1077,9 @@ class Particle {
         pCtx.fill();
     }
 }
-for (let i = 0; i < 80; i++) particles.push(new Particle());
+const isMobile = window.innerWidth <= 768;
+const particleCount = isMobile ? 30 : 80;
+for (let i = 0; i < particleCount; i++) particles.push(new Particle());
 
 (function animP() {
     pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
@@ -1079,7 +1244,8 @@ function animConfetti() {
 }
 function launchConfetti(e) {
     playPop();
-    for (let i = 0; i < 100; i++) confettis.push(new Confetti(e.clientX, e.clientY));
+    const confettiCount = isMobile ? 40 : 100;
+    for (let i = 0; i < confettiCount; i++) confettis.push(new Confetti(e.clientX, e.clientY));
     if (!confettiOn) { confettiOn = true; animConfetti(); }
     showToast('Party time!');
 }
@@ -1092,7 +1258,8 @@ function goGravity() {
     if (z.style.display === 'none') {
         z.style.display = 'block'; z.innerHTML = ''; gBalls = [];
         const colors = ['#3b82f6','#8b5cf6','#06b6d4','#f59e0b','#ef4444','#10b981','#ec4899'];
-        for (let i = 0; i < 20; i++) {
+        const ballCount = isMobile ? 10 : 20;
+        for (let i = 0; i < ballCount; i++) {
             const el = document.createElement('div'), sz = 15 + Math.random() * 35;
             el.className = 'gravity-ball';
             el.style.width = sz + 'px'; el.style.height = sz + 'px';
@@ -1178,7 +1345,8 @@ function spawnFireworks() {
     let n = 0;
     const iv = setInterval(() => {
         const x = Math.random()*innerWidth, y = Math.random()*innerHeight*0.6;
-        for (let i = 0; i < 30; i++) {
+        const fwCount = isMobile ? 15 : 30;
+        for (let i = 0; i < fwCount; i++) {
             const p = document.createElement('div'), hue = Math.random()*360, sz = 3+Math.random()*4;
             p.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:${sz}px;height:${sz}px;background:hsl(${hue},90%,60%);border-radius:50%;pointer-events:none;z-index:9999;box-shadow:0 0 6px hsl(${hue},90%,60%)`;
             document.body.appendChild(p);
@@ -1290,6 +1458,82 @@ addEventListener('mousemove', e => {
     const h = document.getElementById('heroName'); if (!h) return;
     h.style.transform = `translate(${(e.clientX/innerWidth-0.5)*20}px,${(e.clientY/innerHeight-0.5)*10}px)`;
 });
+
+// ===================== GEO GREETING =====================
+(function detectCountry() {
+    const greetings = {
+        'RU': ['Привет! Рад видеть тебя здесь', '🇷🇺'],
+        'KZ': ['Салем! Қош келдіңіз', '🇰🇿'],
+        'US': ['Hey! Welcome to my page', '🇺🇸'],
+        'GB': ['Hello! Glad you stopped by', '🇬🇧'],
+        'DE': ['Hallo! Willkommen auf meiner Seite', '🇩🇪'],
+        'FR': ['Salut! Bienvenue sur ma page', '🇫🇷'],
+        'JP': ['こんにちは！ようこそ', '🇯🇵'],
+        'CN': ['你好！欢迎来到我的页面', '🇨🇳'],
+        'IN': ['Namaste! Welcome', '🇮🇳'],
+        'BR': ['Olá! Bem-vindo à minha página', '🇧🇷'],
+        'TR': ['Merhaba! Sayfama hoş geldiniz', '🇹🇷'],
+        'UZ': ['Salom! Sahifamga xush kelibsiz', '🇺🇿'],
+        'KG': ['Салам! Менин баракчама кош келиңиз', '🇰🇬'],
+        'UA': ['Привіт! Ласкаво прошу', '🇺🇦'],
+        'PL': ['Cześć! Witam na mojej stronie', '🇵🇱'],
+        'AE': ['أهلاً! مرحباً بك في صفحتي', '🇦🇪'],
+        'SA': ['أهلاً! مرحباً بك في صفحتي', '🇸🇦'],
+        'ES': ['¡Hola! Bienvenido a mi página', '🇪🇸'],
+        'IT': ['Ciao! Benvenuto nella mia pagina', '🇮🇹'],
+        'NL': ['Hallo! Welkom op mijn pagina', '🇳🇱'],
+        'KR': ['안녕하세요! 환영합니다', '🇰🇷'],
+        'CA': ['Hey! Welcome to my page', '🇨🇦'],
+        'QA': ['أهلاً! مرحباً بك في صفحتي', '🇶🇦'],
+    };
+
+    // CV files per region
+    const euCountries = [
+        'AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE',
+        'IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE',
+        'NO','CH','GB','IS'
+    ];
+    const uaeCountries = ['AE','SA','QA','BH','KW','OM'];
+    const usCountries = ['US','CA'];
+
+    const cvFiles = {
+        us:     { file: 'files/Alexey_Dartau_US_Version.docx',             label: '(US version)' },
+        eu:     { file: 'files/Alexey_Dartau_EU_Version.docx',             label: '(EU version)' },
+        uae:    { file: 'files/Alexey_Dartau_UAE_Version.docx',            label: '(UAE version)' },
+        global: { file: 'files/Alexey_Dartau_Remote_Global_Version.docx',  label: '(Global version)' },
+    };
+
+    function getRegion(countryCode) {
+        if (usCountries.includes(countryCode))  return 'us';
+        if (euCountries.includes(countryCode))  return 'eu';
+        if (uaeCountries.includes(countryCode)) return 'uae';
+        return 'global';
+    }
+
+    fetch('https://ipapi.co/json/')
+        .then(r => r.json())
+        .then(data => {
+            if (data.error) return;
+            const code = data.country_code;
+
+            // Set greeting
+            const el = document.getElementById('geoGreeting');
+            const match = greetings[code];
+            const flag = match ? match[1] : '🌍';
+            const text = match ? match[0] : 'Hey! Welcome to my page';
+            el.textContent = `${flag} ${text}`;
+            setTimeout(() => el.classList.add('visible'), 300);
+
+            // Set CV download link based on region
+            const region = getRegion(code);
+            const cv = cvFiles[region];
+            const btn = document.getElementById('cvDownloadBtn');
+            const label = document.getElementById('cvRegionLabel');
+            btn.href = cv.file;
+            label.textContent = cv.label;
+        })
+        .catch(() => {}); // Silently fail if blocked
+})();
 
 // Init audio on first click
 document.addEventListener('click', () => initAudio(), { once: true });
