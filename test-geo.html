@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Geo CV Routing - Test Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #0a0e1a; color: #e2e8f0; padding: 2rem; }
+        h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .subtitle { color: #94a3b8; margin-bottom: 2rem; }
+        .test-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; max-width: 1200px; }
+
+        /* Unit tests panel */
+        .panel { background: #111827; border: 1px solid rgba(59,130,246,0.15); border-radius: 12px; padding: 1.5rem; }
+        .panel h2 { font-size: 1.2rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+
+        .test-result { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; padding: 0.5rem 0.8rem; border-radius: 8px; margin-bottom: 0.5rem; }
+        .test-result.pass { background: rgba(16,185,129,0.1); border-left: 3px solid #10b981; }
+        .test-result.fail { background: rgba(239,68,68,0.1); border-left: 3px solid #ef4444; }
+        .pass-icon { color: #10b981; }
+        .fail-icon { color: #ef4444; }
+
+        .summary { margin-top: 1rem; padding: 1rem; border-radius: 8px; font-weight: 700; font-size: 1rem; text-align: center; }
+        .summary.all-pass { background: rgba(16,185,129,0.15); color: #10b981; }
+        .summary.has-fail { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+        /* Simulator panel */
+        .country-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; }
+        .country-btn {
+            padding: 0.5rem 1rem; border-radius: 50px; border: 1px solid rgba(59,130,246,0.3);
+            background: transparent; color: #e2e8f0; font-family: 'Inter', sans-serif;
+            font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+        }
+        .country-btn:hover { background: rgba(59,130,246,0.2); border-color: #3b82f6; }
+        .country-btn.active { background: #3b82f6; border-color: #3b82f6; color: white; }
+
+        .sim-output { background: #1e293b; border-radius: 8px; padding: 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; }
+        .sim-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid rgba(59,130,246,0.1); }
+        .sim-row:last-child { border-bottom: none; }
+        .sim-label { color: #94a3b8; }
+        .sim-value { color: #3b82f6; font-weight: 700; text-align: right; max-width: 60%; word-break: break-all; }
+
+        .btn-run {
+            margin-top: 1rem; padding: 0.7rem 1.5rem; border-radius: 50px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6); border: none;
+            color: white; font-weight: 700; font-size: 0.9rem; cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-run:hover { transform: scale(1.05); box-shadow: 0 5px 20px rgba(59,130,246,0.4); }
+
+        @media (max-width: 768px) { .test-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<h1>Geo CV Routing - Test Suite</h1>
+<p class="subtitle">Unit tests + interactive country simulator for index.html</p>
+
+<div class="test-grid">
+    <!-- Unit Tests -->
+    <div class="panel">
+        <h2>Unit Tests</h2>
+        <button class="btn-run" onclick="runTests()">Run All Tests</button>
+        <div id="testResults" style="margin-top:1rem;"></div>
+        <div id="testSummary"></div>
+    </div>
+
+    <!-- Interactive Simulator -->
+    <div class="panel">
+        <h2>Country Simulator</h2>
+        <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:1rem;">Click a country to see what CV & greeting would be shown:</p>
+        <div class="country-buttons" id="countryButtons"></div>
+        <div class="sim-output" id="simOutput">
+            <div style="color:#94a3b8; text-align:center;">Select a country above</div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===== REPLICATED LOGIC FROM index.html (source of truth for testing) =====
+
+const euCountries = [
+    'AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE',
+    'IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE',
+    'NO','CH','GB','IS'
+];
+const uaeCountries = ['AE','SA','QA','BH','KW','OM'];
+const usCountries = ['US','CA'];
+
+const cvFiles = {
+    us:     { file: 'files/Alexey_Dartau_US_Version.docx',             label: '(US version)' },
+    eu:     { file: 'files/Alexey_Dartau_EU_Version.docx',             label: '(EU version)' },
+    uae:    { file: 'files/Alexey_Dartau_UAE_Version.docx',            label: '(UAE version)' },
+    global: { file: 'files/Alexey_Dartau_Remote_Global_Version.docx',  label: '(Global version)' },
+};
+
+const greetings = {
+    'RU': ['Привет! Рад видеть тебя здесь', '\u{1F1F7}\u{1F1FA}'],
+    'KZ': ['Салем! Қош келдіңіз', '\u{1F1F0}\u{1F1FF}'],
+    'US': ['Hey! Welcome to my page', '\u{1F1FA}\u{1F1F8}'],
+    'GB': ['Hello! Glad you stopped by', '\u{1F1EC}\u{1F1E7}'],
+    'DE': ['Hallo! Willkommen auf meiner Seite', '\u{1F1E9}\u{1F1EA}'],
+    'FR': ['Salut! Bienvenue sur ma page', '\u{1F1EB}\u{1F1F7}'],
+    'JP': ['こんにちは！ようこそ', '\u{1F1EF}\u{1F1F5}'],
+    'CN': ['你好！欢迎来到我的页面', '\u{1F1E8}\u{1F1F3}'],
+    'IN': ['Namaste! Welcome', '\u{1F1EE}\u{1F1F3}'],
+    'BR': ['Olá! Bem-vindo à minha página', '\u{1F1E7}\u{1F1F7}'],
+    'TR': ['Merhaba! Sayfama hoş geldiniz', '\u{1F1F9}\u{1F1F7}'],
+    'UZ': ['Salom! Sahifamga xush kelibsiz', '\u{1F1FA}\u{1F1FF}'],
+    'KG': ['Салам! Менин баракчама кош келиңиз', '\u{1F1F0}\u{1F1EC}'],
+    'UA': ['Привіт! Ласкаво прошу', '\u{1F1FA}\u{1F1E6}'],
+    'PL': ['Cześć! Witam na mojej stronie', '\u{1F1F5}\u{1F1F1}'],
+    'AE': ['أهلاً! مرحباً بك في صفحتي', '\u{1F1E6}\u{1F1EA}'],
+    'SA': ['أهلاً! مرحباً بك في صفحتي', '\u{1F1F8}\u{1F1E6}'],
+    'ES': ['¡Hola! Bienvenido a mi página', '\u{1F1EA}\u{1F1F8}'],
+    'IT': ['Ciao! Benvenuto nella mia pagina', '\u{1F1EE}\u{1F1F9}'],
+    'NL': ['Hallo! Welkom op mijn pagina', '\u{1F1F3}\u{1F1F1}'],
+    'KR': ['안녕하세요! 환영합니다', '\u{1F1F0}\u{1F1F7}'],
+    'CA': ['Hey! Welcome to my page', '\u{1F1E8}\u{1F1E6}'],
+    'QA': ['أهلاً! مرحباً بك في صفحتي', '\u{1F1F6}\u{1F1E6}'],
+};
+
+function getRegion(countryCode) {
+    if (usCountries.includes(countryCode))  return 'us';
+    if (euCountries.includes(countryCode))  return 'eu';
+    if (uaeCountries.includes(countryCode)) return 'uae';
+    return 'global';
+}
+
+function getGreeting(countryCode, countryName) {
+    const match = greetings[countryCode];
+    const flag = match ? match[1] : '🌍';
+    const text = match ? match[0] : 'Hey! Welcome to my page';
+    return { flag, text };
+}
+
+// ===== UNIT TESTS =====
+
+let passed = 0, failed = 0;
+
+function assert(testName, actual, expected) {
+    const ok = actual === expected;
+    if (ok) passed++; else failed++;
+    return { testName, ok, actual, expected };
+}
+
+function runTests() {
+    passed = 0; failed = 0;
+    const results = [];
+
+    // --- Region detection tests ---
+    results.push(assert('US -> us region', getRegion('US'), 'us'));
+    results.push(assert('CA -> us region', getRegion('CA'), 'us'));
+    results.push(assert('DE -> eu region', getRegion('DE'), 'eu'));
+    results.push(assert('FR -> eu region', getRegion('FR'), 'eu'));
+    results.push(assert('GB -> eu region', getRegion('GB'), 'eu'));
+    results.push(assert('PL -> eu region', getRegion('PL'), 'eu'));
+    results.push(assert('NL -> eu region', getRegion('NL'), 'eu'));
+    results.push(assert('ES -> eu region', getRegion('ES'), 'eu'));
+    results.push(assert('IT -> eu region', getRegion('IT'), 'eu'));
+    results.push(assert('CH -> eu region', getRegion('CH'), 'eu'));
+    results.push(assert('NO -> eu region', getRegion('NO'), 'eu'));
+    results.push(assert('SE -> eu region', getRegion('SE'), 'eu'));
+    results.push(assert('AE -> uae region', getRegion('AE'), 'uae'));
+    results.push(assert('SA -> uae region', getRegion('SA'), 'uae'));
+    results.push(assert('QA -> uae region', getRegion('QA'), 'uae'));
+    results.push(assert('BH -> uae region', getRegion('BH'), 'uae'));
+    results.push(assert('KW -> uae region', getRegion('KW'), 'uae'));
+    results.push(assert('OM -> uae region', getRegion('OM'), 'uae'));
+    results.push(assert('KZ -> global region', getRegion('KZ'), 'global'));
+    results.push(assert('RU -> global region', getRegion('RU'), 'global'));
+    results.push(assert('JP -> global region', getRegion('JP'), 'global'));
+    results.push(assert('IN -> global region', getRegion('IN'), 'global'));
+    results.push(assert('BR -> global region', getRegion('BR'), 'global'));
+    results.push(assert('XX -> global region', getRegion('XX'), 'global'));
+
+    // --- CV file mapping tests ---
+    results.push(assert('US CV file', cvFiles[getRegion('US')].file, 'files/Alexey_Dartau_US_Version.docx'));
+    results.push(assert('CA CV file', cvFiles[getRegion('CA')].file, 'files/Alexey_Dartau_US_Version.docx'));
+    results.push(assert('DE CV file', cvFiles[getRegion('DE')].file, 'files/Alexey_Dartau_EU_Version.docx'));
+    results.push(assert('GB CV file', cvFiles[getRegion('GB')].file, 'files/Alexey_Dartau_EU_Version.docx'));
+    results.push(assert('AE CV file', cvFiles[getRegion('AE')].file, 'files/Alexey_Dartau_UAE_Version.docx'));
+    results.push(assert('SA CV file', cvFiles[getRegion('SA')].file, 'files/Alexey_Dartau_UAE_Version.docx'));
+    results.push(assert('KZ CV file', cvFiles[getRegion('KZ')].file, 'files/Alexey_Dartau_Remote_Global_Version.docx'));
+    results.push(assert('JP CV file', cvFiles[getRegion('JP')].file, 'files/Alexey_Dartau_Remote_Global_Version.docx'));
+
+    // --- CV label tests ---
+    results.push(assert('US label', cvFiles[getRegion('US')].label, '(US version)'));
+    results.push(assert('EU label', cvFiles[getRegion('DE')].label, '(EU version)'));
+    results.push(assert('UAE label', cvFiles[getRegion('AE')].label, '(UAE version)'));
+    results.push(assert('Global label', cvFiles[getRegion('KZ')].label, '(Global version)'));
+
+    // --- Greeting tests ---
+    results.push(assert('US greeting text', getGreeting('US').text, 'Hey! Welcome to my page'));
+    results.push(assert('KZ greeting text', getGreeting('KZ').text, 'Салем! Қош келдіңіз'));
+    results.push(assert('DE greeting text', getGreeting('DE').text, 'Hallo! Willkommen auf meiner Seite'));
+    results.push(assert('AE greeting text', getGreeting('AE').text, 'أهلاً! مرحباً بك في صفحتي'));
+    results.push(assert('RU greeting text', getGreeting('RU').text, 'Привет! Рад видеть тебя здесь'));
+    results.push(assert('Unknown country fallback', getGreeting('XX').text, 'Hey! Welcome to my page'));
+    results.push(assert('Unknown country flag', getGreeting('XX').flag, '🌍'));
+
+    // --- Edge cases ---
+    results.push(assert('Empty string -> global', getRegion(''), 'global'));
+    results.push(assert('Lowercase us -> global (case sensitive)', getRegion('us'), 'global'));
+
+    // --- All EU countries are mapped ---
+    euCountries.forEach(c => {
+        results.push(assert(`EU country ${c} -> eu`, getRegion(c), 'eu'));
+    });
+
+    // --- All UAE countries are mapped ---
+    uaeCountries.forEach(c => {
+        results.push(assert(`UAE/Gulf country ${c} -> uae`, getRegion(c), 'uae'));
+    });
+
+    // Render results
+    const container = document.getElementById('testResults');
+    container.innerHTML = results.map(r =>
+        `<div class="test-result ${r.ok ? 'pass' : 'fail'}">
+            <span class="${r.ok ? 'pass-icon' : 'fail-icon'}">${r.ok ? '✓' : '✗'}</span>
+            ${r.testName}
+            ${r.ok ? '' : ` — expected <b>${r.expected}</b>, got <b>${r.actual}</b>`}
+        </div>`
+    ).join('');
+
+    const summary = document.getElementById('testSummary');
+    const total = passed + failed;
+    summary.innerHTML = `<div class="summary ${failed === 0 ? 'all-pass' : 'has-fail'}">
+        ${failed === 0 ? '✓ ALL PASSED' : '✗ SOME FAILED'} — ${passed}/${total} passed, ${failed} failed
+    </div>`;
+}
+
+// ===== COUNTRY SIMULATOR =====
+
+const testCountries = [
+    { code: 'US', name: 'United States', city: 'New York' },
+    { code: 'CA', name: 'Canada', city: 'Toronto' },
+    { code: 'GB', name: 'United Kingdom', city: 'London' },
+    { code: 'DE', name: 'Germany', city: 'Berlin' },
+    { code: 'FR', name: 'France', city: 'Paris' },
+    { code: 'NL', name: 'Netherlands', city: 'Amsterdam' },
+    { code: 'PL', name: 'Poland', city: 'Warsaw' },
+    { code: 'ES', name: 'Spain', city: 'Madrid' },
+    { code: 'IT', name: 'Italy', city: 'Rome' },
+    { code: 'AE', name: 'UAE', city: 'Dubai' },
+    { code: 'SA', name: 'Saudi Arabia', city: 'Riyadh' },
+    { code: 'QA', name: 'Qatar', city: 'Doha' },
+    { code: 'KZ', name: 'Kazakhstan', city: 'Almaty' },
+    { code: 'RU', name: 'Russia', city: 'Moscow' },
+    { code: 'JP', name: 'Japan', city: 'Tokyo' },
+    { code: 'IN', name: 'India', city: 'Mumbai' },
+    { code: 'BR', name: 'Brazil', city: 'São Paulo' },
+    { code: 'TR', name: 'Turkey', city: 'Istanbul' },
+    { code: 'KR', name: 'South Korea', city: 'Seoul' },
+    { code: 'AU', name: 'Australia', city: 'Sydney' },
+];
+
+const btnContainer = document.getElementById('countryButtons');
+testCountries.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'country-btn';
+    btn.textContent = `${c.code} ${c.name}`;
+    btn.onclick = () => simulateCountry(c, btn);
+    btnContainer.appendChild(btn);
+});
+
+function simulateCountry(country, btn) {
+    // Highlight active button
+    document.querySelectorAll('.country-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const region = getRegion(country.code);
+    const cv = cvFiles[region];
+    const greeting = getGreeting(country.code, country.name);
+
+    document.getElementById('simOutput').innerHTML = `
+        <div class="sim-row"><span class="sim-label">Country</span><span class="sim-value">${country.name} (${country.code})</span></div>
+        <div class="sim-row"><span class="sim-label">Region</span><span class="sim-value">${region.toUpperCase()}</span></div>
+        <div class="sim-row"><span class="sim-label">CV File</span><span class="sim-value">${cv.file}</span></div>
+        <div class="sim-row"><span class="sim-label">Button Label</span><span class="sim-value">Download CV ${cv.label}</span></div>
+        <div class="sim-row"><span class="sim-label">Greeting</span><span class="sim-value">${greeting.flag} ${greeting.text}</span></div>
+    `;
+}
+
+// Auto-run tests on load
+runTests();
+</script>
+</body>
+</html>
